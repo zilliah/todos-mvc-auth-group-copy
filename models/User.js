@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 
 //what info is saved for the user
+// just a constructor!
 const UserSchema = new mongoose.Schema({
   userName: { type: String, unique: true },
   email: { type: String, unique: true },
@@ -11,10 +12,11 @@ const UserSchema = new mongoose.Schema({
 
 
 // Password hash middleware.
- 
+ // prevents passwords being saved in plaintext
  UserSchema.pre('save', function save(next) {
   const user = this
   if (!user.isModified('password')) { return next() }
+  // bcrypt hashes the password for us
   bcrypt.genSalt(10, (err, salt) => {
     if (err) { return next(err) }
     //bcrypt hashes (or "salts") the password 

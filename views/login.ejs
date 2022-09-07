@@ -7,8 +7,10 @@
     <title>Document</title>
 </head>
 <body>
+    <!-- place for flash error messages -->
     <% if (locals.messages.errors) { %>
         <% messages.errors.forEach( el => { %>
+            <!-- bootstrap classes -->
             <div class="alert alert-danger"><%= el.msg %></div>
         <% }) %>    
     <% } %>

@@ -1,4 +1,6 @@
 //  notice local strategy here, not using a 3rd party auth
+// could replace with a different strategy - just check passport website
+// gives you predone code, don't need to write your own!
 const LocalStrategy = require('passport-local').Strategy
 const mongoose = require('mongoose')
 const User = require('../models/User')

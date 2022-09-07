@@ -1,28 +1,38 @@
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
+//handles auth, has strategies
+//can swap out - eg, local auth vs oauth strategies
 const passport = require('passport')
-const session = require('express-session') //session management
 
- //store session data in DB?
- //more middleware for session storage
+//keeps users logged in
+//more middleware for session storage
 //don't use in prod, can leak memory
+const session = require('express-session') 
 const MongoStore = require('connect-mongo')(session)
 
-//popup messages for failed logins, etc ? 
+// messages for failed logins, etc 
+// show above login form
 const flash = require('express-flash')
 
-//logs out different requests
+//logs out different requests (server side)
 const logger = require('morgan')
+//connect to DB
 const connectDB = require('./config/database')
+
+//routes
 const mainRoutes = require('./routes/main')
 const todoRoutes = require('./routes/todos')
 
+// tell express to use environment variables
 require('dotenv').config({path: './config/.env'})
 
 // Passport config - connect to passport config file
+// to choose the strategy, etc
 require('./config/passport')(passport)
 
+//connect to DB
+// go to the database file in config folder (required above)
 connectDB()
 
 app.set('view engine', 'ejs')
@@ -37,16 +47,20 @@ app.use(logger('dev'))
 //keeps us logged in across multiple sessions
 app.use(
     session({
+      //randomizing cookies a bit more? sort of? makes them more unique
+      //can be in .env
       secret: 'keyboard cat',
       resave: false,
       saveUninitialized: false,
+      // store session info in mongoDB
+      // optional, but needed for persistent sessions
       store: new MongoStore({ mongooseConnection: mongoose.connection }),
     })
   )
   
 // Passport middleware (initialize passport)
 app.use(passport.initialize())
-//sets up the session for the user
+//use sessions as well
 app.use(passport.session())
 
 //setting flash
